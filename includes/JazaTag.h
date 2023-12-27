@@ -2,7 +2,14 @@
 #define JAZA_TAG_CLASS_H
 
 #include <string>
+#include <cstdlib>
+#include <sstream>
+#include <cstring>
 #include <iostream>
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <vector>
+#include <unistd.h>
 
 class JazaTag
 {

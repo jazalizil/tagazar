@@ -1,9 +1,3 @@
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <sys/ioctl.h>
-#include <stdio.h>
-#include <unistd.h>
 #include "JazaTag.h"
 #include "jaza_ascii.h"
 
@@ -17,7 +11,7 @@ std::string get_jaza_ascii_str()
 {
     std::string s;
     s.reserve(jaza_ascii_len);
-    int i;
+    unsigned int i;
     for (i = 0; i < jaza_ascii_len; i++) {
         s += jaza_ascii_chars[i];
     }

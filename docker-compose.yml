@@ -1,0 +1,14 @@
+version: '3'
+services:
+  splash:
+    image: scrapinghub/splash
+    ports:
+      - 8050:8050
+
+  tags:
+    build:
+      context: ./ScrapTags
+
+
+  builder:
+

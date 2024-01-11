@@ -1,4 +1,4 @@
-NAME	=	jazaoazar
+NAME	=	tagascii
 
 RM		=	rm -rf
 
@@ -6,34 +6,34 @@ DEBUG	=	1
 
 EXTENSION	=	.cpp
 
-SRC		=	$(wildcard $(addprefix sources/, *)$(EXTENSION))
+SRC		=	$(wildcard $(addprefix renderer/sources/, *)$(EXTENSION))
 
 NOM		=	$(basename $(notdir $(SRC)))
 
-OBJ		=	$(addprefix objects/, $(addsuffix .o, $(NOM)))
+OBJ		=	$(addprefix renderer/objects/, $(addsuffix .o, $(NOM)))
 
 ifeq ($(DEBUG), 1)
   CXXFLAGS	+=	-W -Wall -Wextra -pedantic -ansi
 endif
 
-CXXFLAGS	+=	-Iincludes/
+CXXFLAGS	+=	-Irenderer/includes/
 
-all		:	obj $(NAME)
+all		:	obj $(NAME) clean
 
 obj		:
-			mkdir objects
+			mkdir renderer/objects
 
 $(NAME)	:	$(OBJ)
 			$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ)
 
-objects/%.o	:	sources/%$(EXTENSION)
+renderer/objects/%.o	:	renderer/sources/%$(EXTENSION)
 			$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 install	:	all
 			@sudo install -v -m 755 $(NAME) /usr/bin/
 
 clean	:
-			$(RM) $(OBJ) objects
+			$(RM) $(OBJ) renderer/objects
 
 fclean	:	clean
 			$(RM) $(NAME)

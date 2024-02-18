@@ -1,7 +1,6 @@
-#ifndef JAZA_TAG_CLASS_H
-#define JAZA_TAG_CLASS_H
+#ifndef TAG_CLASS_H
+#define TAG_CLASS_H
 
-#include <string>
 #include <cstdlib>
 #include <sstream>
 #include <cstring>
@@ -11,17 +10,17 @@
 #include <vector>
 #include <unistd.h>
 
-class JazaTag
+class Tag
 {
     private:
         std::string value;
         int width;
         int color;
     public:
-        JazaTag();
-        JazaTag(std::string v);
-        friend std::ostream& operator<<(std::ostream& os, const JazaTag& jt);
+        Tag();
+        Tag(std::string v);
+        friend std::ostream& operator<<(std::ostream& os, const Tag& t);
         bool fit_width(int width);
 };
 
-#endif // JAZA_TAG_H
+#endif // TAG_H

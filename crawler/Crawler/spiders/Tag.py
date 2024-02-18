@@ -23,8 +23,11 @@ class TagSpider(scrapy.Spider):
     allowed_domains = ["www.patorjk.com"]
 
     def start_requests(self) -> Iterable[Request]:
-        try: self.word
-        except AttributeError: word = 'Tag'
+        word = "Tag"
+        try:
+            word = self.word
+        except AttributeError:
+            self.logger.warnging("Set default Tag")
         params = {
             'p': 'testall',
             'f': 'Graffiti',
@@ -36,20 +39,20 @@ class TagSpider(scrapy.Spider):
             "playwright_include_page": True,
         })
 
-    async def new_font(self, response):
-        count = await self.page.locator("div#taagTestAllListLoaded").text_content()
-        self.logger.info(count)
 
     async def parse(self, response):
-        self.page = response.meta["playwright_page"]
-        self.page.set_default_timeout(TIMEOUT)
-        self.page.on("response", self.new_font)
+        page = response.meta["playwright_page"]
+        async def handle_download(response):
+            loading = await page.locator('div#taagTestAllListLoaded').text_content()
+            self.logger.info('{}.'.format(loading))
+        page.on("response", handle_download)
+        page.set_default_timeout(TIMEOUT)
         try:
-            await self.page.wait_for_function(js_code)
+            await page.wait_for_function(js_code)
         except PlaywrightTimeoutError:
             self.logger.warning('Timeout error')
-        tags = await self.page.locator("pre.fig").all_inner_texts()
-        await self.page.close()
+        tags = await page.locator("pre.fig").all_inner_texts()
+        await page.close()
         self.logger.info("Done.")
         for tag in tags:
             yield Tag(value=tag, size=len(tag))

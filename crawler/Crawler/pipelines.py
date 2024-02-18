@@ -6,23 +6,29 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+import logging
+
+logger = logging.getLogger()
 
 class CrawlerPipeline:
-    first = True
     size = 0
     def open_spider(self, spider):
         self.file = open("tags.h", "w")
-        self.file.write("unsigned char TAGS[] = ")
 
     def close_spider(self, spider):
-        self.file.write('};\n')
-        self.file.write('unsigned int TAGS_SIZE = {};\n'.format(self.size))
+        output = '\n\nconst char *TAGS[] = {{tag_{}}};\n'.format(",tag_".join(str(i) for i in range(self.size)))
+        output += 'const int TAGS_SIZE = {};\n'.format(self.size)
+        self.file.write(output)
+        logger.info(output)
         self.file.close()
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        tag = ',0x'.join(adapter["value"].encode('utf-8').hex(sep='x').split('x') + ['0a', '0a'])
-        self.file.write('{}0x{}'.format('{' if self.first else ',', tag))
-        self.first = False
-        self.size += adapter['size']
+        hex_tag = adapter["value"].encode('utf-8').hex(sep='x').split('x')
+        tag = ',0x'.join(hex_tag)
+        logger.info(tag)
+        logger.info("\n{}".format(adapter["value"]))
+        output = "const char tag_{}[{}] = {{0x{}, 0x0}};\n".format(self.size, len(hex_tag) + 1, tag)
+        self.file.write(output)
+        self.size += 1
         return item

@@ -1,48 +1,30 @@
-#include "JazaTag.h"
-#include "jaza_ascii.h"
+#include "Tag.h"
+#include "tags.h"
 
-JazaTag rand_tag(std::vector<JazaTag>& tags) {
+Tag rand_tag(std::vector<Tag>& tags) {
     int rand_idx = std::rand() % tags.size();
 
     return tags[rand_idx];
 }
 
-std::string get_jaza_ascii_str()
-{
-    std::string s;
-    s.reserve(jaza_ascii_len);
-    unsigned int i;
-    for (i = 0; i < jaza_ascii_len; i++) {
-        s += jaza_ascii_chars[i];
-    }
-    return s;
-}
+std::vector<Tag> get_tags(struct winsize& w) {
+    Tag t;
+    std::vector<Tag> tags;
+    unsigned int i = 0;
 
-std::vector<JazaTag> get_tags(struct winsize& w) {
-    std::string line;
-    std::string tag;
-    JazaTag jt;
-    std::vector<JazaTag> tags;
-    std::stringstream jaza_ascii(get_jaza_ascii_str());
-
-    while (jaza_ascii) {
-        std::getline(jaza_ascii, line);
-        if (line.compare("= FontSelect & Copy") == 0)  {
-            jt = JazaTag(tag);
-            if (jt.fit_width(w.ws_col)) {
-                tags.push_back(jt);
-            }
-            tag = "";
-        } else {
-            tag += "\n" + line;
+    while (i < TAGS_SIZE) {
+        t = Tag(TAGS[i]);
+        if (t.fit_width(w.ws_col)) {
+            tags.push_back(t);
         }
+        i++;
     }
     return tags;
 }
 
 int main() {
     struct winsize w;
-    std::vector<JazaTag> tags;
+    std::vector<Tag> tags;
 
     srand (time(0));
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);

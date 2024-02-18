@@ -1,4 +1,4 @@
-NAME	=	jazaoazar
+NAME	=	tagazar
 
 RM		=	rm -rf
 
@@ -18,10 +18,22 @@ endif
 
 CXXFLAGS	+=	-Iincludes/
 
-all		:	obj $(NAME)
+all		:	link obj $(NAME)
 
 obj		:
 			mkdir objects
+
+crawler:
+			@cd crawler; \
+			read -p "Set word:[Tag] " WORD; \
+			echo $$WORD; \
+			pwd; \
+			scrapy crawl Tag -a word=$$WORD; \
+			cd ..;
+
+link: 
+			@ln -sn ../crawler/tags.h includes/tags.h
+
 
 $(NAME)	:	$(OBJ)
 			$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ)
@@ -29,15 +41,20 @@ $(NAME)	:	$(OBJ)
 objects/%.o	:	sources/%$(EXTENSION)
 			$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
-install	:	all
+install-python:
+			@pyenv install -s
+			@pip install -r requirements.txt
+			@playwright install
+
+install	:	install-python crawler all
 			@sudo install -v -m 755 $(NAME) /usr/local/bin
 
 clean	:
-			$(RM) $(OBJ) objects
+			$(RM) $(OBJ) objects includes/tags.h
 
 fclean	:	clean
 			$(RM) $(NAME)
 
 re		:	fclean all
 
-.PHONY	:	all clean fclean re obj
+.PHONY	:	all clean fclean re obj link crawler install-python

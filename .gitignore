@@ -1,6 +1,7 @@
 objects
-jazaoazar
+tagazar
 
 crawler/**/__pycache__/
 crawler/**/*.py[cod]
 crawler/**/*$py.class
+crawwler/tags.h

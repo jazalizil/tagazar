@@ -1,2 +1,6 @@
 objects
 jazaoazar
+
+crawler/**/__pycache__/
+crawler/**/*.py[cod]
+crawler/**/*$py.class

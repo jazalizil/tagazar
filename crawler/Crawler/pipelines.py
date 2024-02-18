@@ -6,10 +6,6 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-import logging
-import os
-
-logger = logging.getLogger()
 
 class CrawlerPipeline:
     first = True
@@ -25,10 +21,8 @@ class CrawlerPipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-#        logger.info("unsigned char x[] = {{{}}}".format(", ".join([hex(i) for i in adapter["value"]])))
         tag = ',0x'.join(adapter["value"].encode('utf-8').hex(sep='x').split('x') + ['0a', '0a'])
         self.file.write('{}0x{}'.format('{' if self.first else ',', tag))
         self.first = False
-        logger.info('0x{}'.format(tag))
         self.size += adapter['size']
         return item

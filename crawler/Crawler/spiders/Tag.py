@@ -1,11 +1,9 @@
 from typing import Iterable
 
 import scrapy
-import logging
 import urllib.parse
 
 from scrapy import Request
-from scrapy_playwright.page import PageMethod
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from Crawler.items import Tag
